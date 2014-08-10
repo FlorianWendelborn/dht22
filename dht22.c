@@ -26,7 +26,7 @@ static uint8_t sizecvt(const int read)
 
   if (read > 255 || read < 0)
   {
-    printf("{\"err\": {\"message\": \"INVALID_INPUT\"}}");
+    printf("{\"err\": {\"message\": \"INVALID_INPUT\"}}\n");
     exit(EXIT_FAILURE);
   }
   return (uint8_t)read;
@@ -93,7 +93,7 @@ static int read_dht22_dat()
   }
   else
   {
-    printf("{\"err\": {\"message\": \"DATA_NOT_GOOD\"}}");
+    printf("{\"err\": {\"message\": \"DATA_NOT_GOOD\"}}\n");
     return 0;
   }
 }
@@ -103,7 +103,7 @@ int main (int argc, char *argv[])
   int lockfd;
 
   if (argc != 2)
-    printf ("{\"err\": {\"message\": \"NOT_ENOUGH_ARGUMENTS\"}}");
+    printf ("{\"err\": {\"message\": \"NOT_ENOUGH_ARGUMENTS\"}}\n");
   else
     DHTPIN = atoi(argv[1]);
     
@@ -114,7 +114,7 @@ int main (int argc, char *argv[])
 	
   if (setuid(getuid()) < 0)
   {
-    perror("{\"err\": {\"message\": \"DROPPING_PRIVILEGES_FAILED\"}}");
+    perror("{\"err\": {\"message\": \"DROPPING_PRIVILEGES_FAILED\"}}\n");
     exit(EXIT_FAILURE);
   }
 
