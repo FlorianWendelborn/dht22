@@ -26,7 +26,7 @@ static uint8_t sizecvt(const int read)
 
   if (read > 255 || read < 0)
   {
-    printf("Invalid data from wiringPi library\n");
+    printf("{\"err\": {\"message\": \"INVALID_INPUT\"}}");
     exit(EXIT_FAILURE);
   }
   return (uint8_t)read;
@@ -88,12 +88,12 @@ static int read_dht22_dat()
         if ((dht22_dat[2] & 0x80) != 0)  t *= -1;
 
 
-    printf("Humidity = %.2f %% Temperature = %.2f *C \n", h, t );
+    printf("{\"data\": {\"humidity\": %.2f, \"temperature\": %.2f}}\n", h, t );
     return 1;
   }
   else
   {
-    printf("Data not good, skip\n");
+    printf("{\"err\": {\"message\": \"DATA_NOT_GOOD\"}}");
     return 0;
   }
 }
@@ -103,13 +103,10 @@ int main (int argc, char *argv[])
   int lockfd;
 
   if (argc != 2)
-    printf ("usage: %s <pin>\ndescription: pin is the wiringPi pin number\nusing 7 (GPIO 4)\n",argv[0]);
+    printf ("{\"err\": {\"message\": \"NOT_ENOUGH_ARGUMENTS\"}}");
   else
     DHTPIN = atoi(argv[1]);
-   
-
-  printf ("Raspberry Pi wiringPi DHT22 reader\nwww.lolware.net\n") ;
-
+    
   lockfd = open_lockfile(LOCKFILE);
 
   if (wiringPiSetup () == -1)
@@ -117,16 +114,17 @@ int main (int argc, char *argv[])
 	
   if (setuid(getuid()) < 0)
   {
-    perror("Dropping privileges failed\n");
+    perror("{\"err\": {\"message\": \"DROPPING_PRIVILEGES_FAILED\"}}");
     exit(EXIT_FAILURE);
   }
 
-  while (read_dht22_dat() == 0) 
+  while (1) 
   {
-     delay(1000); // wait 1sec to refresh
+     read_dht22_dat();
+     delay(500); // wait 0.5s to refresh
   }
 
-  delay(1500);
+  delay(500);
   close_lockfile(lockfd);
 
   return 0 ;
