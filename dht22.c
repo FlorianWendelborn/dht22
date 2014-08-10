@@ -121,6 +121,7 @@ int main (int argc, char *argv[])
   while (1) 
   {
      read_dht22_dat();
+     fflush(stdout);
      delay(500); // wait 0.5s to refresh
   }
 
